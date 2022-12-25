@@ -2,7 +2,7 @@
 This repo is forked from original DualSDF, and add support for pretraining DualSDF models used in [gCasp](https://github.com/zju3dv/gCasp).
 
 ### Data preparation for NOCS
-The pretrained DualSDF models for all categories can be downloaded from [Google Drive](https://drive.google.com/file/d/1d5DT51ZzB2UqMLkOIV5nhmBAjku8zaGS/view?usp=sharing).
+The pretrained DualSDF models for all categories can be downloaded from [Google Drive](https://drive.google.com/file/d/1d5DT51ZzB2UqMLkOIV5nhmBAjku8zaGS/view?usp=sharing), or you could train the models according to the following instructions. 
 #### Download Data
 Download ShapeNet [object meshes](http://download.cs.stanford.edu/orion/nocs/obj_models.zip) used in NOCS, and unzip the meshes:
 ```bash
