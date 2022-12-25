@@ -44,7 +44,7 @@ def get_args():
 
     # parse config file
     with open(args.config, 'r') as f:
-        config = yaml.load(f)
+        config = yaml.safe_load(f)
     config = dict2namespace(config)
 
     #  Create log_name
@@ -56,11 +56,14 @@ def get_args():
     cfg_file_name = os.path.splitext(os.path.basename(args.config))[0]
     run_time = time.strftime('%Y-%b-%d-%H-%M-%S')
     # Currently save dir and log_dir are the same
-    config.log_name = "logs/{}{}_{}".format(log_prefix, cfg_file_name, run_time)
-    config.save_dir = "logs/{}{}_{}/checkpoints".format(log_prefix, cfg_file_name, run_time)
-    config.log_dir = "logs/{}{}_{}".format(log_prefix, cfg_file_name, run_time)
-    os.makedirs(os.path.join(config.log_dir, 'config'))
-    os.makedirs(config.save_dir)
+    # config.log_name = "logs/{}{}_{}".format(log_prefix, cfg_file_name, run_time)
+    # config.save_dir = "logs/{}{}_{}/checkpoints".format(log_prefix, cfg_file_name, run_time)
+    # config.log_dir = "logs/{}{}_{}".format(log_prefix, cfg_file_name, run_time)
+    config.log_name = "logs/{}{}".format(log_prefix, cfg_file_name)
+    config.save_dir = "logs/{}{}/checkpoints".format(log_prefix, cfg_file_name)
+    config.log_dir = "logs/{}{}".format(log_prefix, cfg_file_name)
+    os.makedirs(os.path.join(config.log_dir, 'config'), exist_ok=True)
+    os.makedirs(config.save_dir, exist_ok=True)
     copy2(args.config, os.path.join(config.log_dir, 'config'))
     with open(os.path.join(config.log_dir, 'config', 'argv.json'), 'w') as f:
         json.dump(sys.argv, f)

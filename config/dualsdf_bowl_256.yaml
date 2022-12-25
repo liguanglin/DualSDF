@@ -3,14 +3,16 @@ resume:
     
 data:
     type: datasets.shapenetv2_newsdf_dataset
-    cate_id: "02691156" # Planes
+    cate_id: "02880940" # bowl
     split_files:
-        train: ./datasets/splits/sv2_planes_all.json
-        test: ./datasets/splits/sv2_planes_all.json
+        train: ./datasets/splits/sv2_bowl_all.json
+        test: ./datasets/splits/sv2_bowl_all.json
     sdf_data_dir:
-        surface: /mnt/data3/ShapeNet_sdf_even/02691156_surface
-        sphere: /mnt/data3/ShapeNet_sdf_even/02691156_sphere
+        surface: ./ShapeNetCore_NOCS_sdf/02880940_surface
+        sphere: ./ShapeNetCore_NOCS_sdf/02880940_sphere
     train:
+        sdf_out: 0
+        sdf_in: 0
         num_sample_points:
             fine: 2048
             coarse: 1024
@@ -85,11 +87,11 @@ trainer:
         type: onesided_l2
         weight: 1.0
     mixture_loss: True # use proper mixture-of-experts loss instead of approximaton
-    epochs: 2800
+    epochs: 10000
     
 viz:
   log_interval: 1
-  save_interval: 50
+  save_interval: 1000
   
 render:
     cam_model: 'Orthographic' # Perspective
@@ -136,7 +138,7 @@ manip:
         sample_twice: False
     optim:
         type: Adam
-        lr: 5.e-2 # for VAD_logvar, one step per epoch
+        lr: 1.e-1 # for VAD_logvar, one step per epoch
         betas: [0.9, 0.999]
         eps: 1.e-8
         weight_decay: 0
@@ -153,7 +155,6 @@ val:
     optim_latentcode:
         type: Adam
         lr: 5.e-1 # for AE
-        betas: [0.9, 0.999]
         eps: 1.e-8
         weight_decay: 0
         lr_scheduler:

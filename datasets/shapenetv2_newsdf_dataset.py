@@ -83,10 +83,12 @@ class SequentialWarpSampler(Sampler):
         
 
 class NPYLoaderN(Dataset):
-    def __init__(self, filelist, npoints_fine=2048, npoints_coarse=2048):
+    def __init__(self, filelist, npoints_fine=2048, npoints_coarse=2048, sdf_out = 0, sdf_in = 0):
         self.filelist = filelist
         self.npoints_fine = npoints_fine
         self.npoints_coarse = npoints_coarse
+        self.sdf_out = sdf_out
+        self.sdf_in = sdf_in
         print('[NPYLoaderN] Number of shapes: {}; #fine: {}; #coarse: {}.'.format(len(filelist), npoints_fine, npoints_coarse))   
         
     def __len__(self):
@@ -100,14 +102,19 @@ class NPYLoaderN(Dataset):
         num_sphere_points = self.npoints_fine - num_inside_points - num_outside_points
         # for surface samples: [xyzd_inside; xyzd_outside] half inside, half outside
         # Surface samples
-        data = np.load(surface_file, mmap_mode='r')
+        data = np.load(surface_file)
         num_samples = data.shape[0]
         subset_idx_inside = np.random.choice(num_samples//2, num_inside_points, replace=True)
         subset_idx_outside = np.random.choice(num_samples//2, num_outside_points, replace=True) + num_samples//2
         subset_idx = np.concatenate([subset_idx_inside, subset_idx_outside])
         data_sur = data[subset_idx,:]
         # Sphere samples
-        data = np.load(sphere_file, mmap_mode='r')
+        data = np.load(sphere_file)
+        if(self.sdf_in != 0):
+            in_index = data[:,3] < 0
+            ou_index = data[:,3] >= 0
+            data[in_index, 3] = -data[in_index, 3] - self.sdf_in
+            data[ou_index, 3] -= self.sdf_in
         num_samples = data.shape[0]
         subset_idx = np.random.choice(num_samples, num_sphere_points, replace=True)
         data_sph = data[subset_idx,:]
@@ -115,7 +122,7 @@ class NPYLoaderN(Dataset):
         data_f = np.concatenate([data_sur, data_sph], axis=0)
         
         # Coarse samples
-        #data = np.load(coarse_file, mmap_mode='r')
+        #data = np.load(coarse_file)
         #data = np.load(coarse_file, mmap_mode=None)
         #data = np.zeros([250000,4], dtype=np.float32)
         subset_idx = np.random.choice(data.shape[0], self.npoints_coarse, replace=True)
@@ -164,7 +171,7 @@ def get_data_loaders(args):
     assert len(test_data_list) == len(test_split)
     print('[get_data_loaders] #train: {}; #test: {}.'.format(len(train_data_list), len(test_data_list)))
     
-    train_dataset = NPYLoaderN(train_data_list, args.train.num_sample_points.fine, args.train.num_sample_points.coarse)
+    train_dataset = NPYLoaderN(train_data_list, args.train.num_sample_points.fine, args.train.num_sample_points.coarse, args.train.sdf_out, args.train.sdf_in)
     train_sampler = ShuffleWarpSampler(train_dataset, n_repeats=args.train.num_repeats)
     train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=args.train.batch_size, sampler=train_sampler, shuffle=False, num_workers=args.train.num_workers, pin_memory=True, drop_last=False, collate_fn=np_collate_dict, worker_init_fn=init_np_seed)
     

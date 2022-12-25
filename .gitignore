@@ -4,3 +4,6 @@
 *.so
 extensions/mesh2sdf2_cuda/build/
 logs/
+bads_list*
+ShapeNetCore*
+DualSDF_ckpts/
