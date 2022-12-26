@@ -13,23 +13,23 @@ obj_dir = args.obj_dir
 npy_dir = args.npy_dir
 
 cate_dirs = glob(obj_dir+'/*')
+all_categories = ['02876657', '02880940', '02942699', '02946921', '03642806', '03797390']
 
 for cate_dir in cate_dirs:
     cate = cate_dir.split('/')[-1]
     obj_files = glob(cate_dir+'/*/*.obj')
+    if(cate not in all_categories):
+        continue
     print('{}/{}'.format(npy_dir, cate))
     os.makedirs('{}/{}'.format(npy_dir, cate), exist_ok=True)
     for obj in obj_files:
-        print('read')
         mesh = open3d.io.read_triangle_mesh(obj)
-        print('read2')
         vertices = np.array(mesh.vertices)
         triangle = np.array(mesh.triangles)
         #print(triangle.shape, vertices.shape)
         obj_name = obj.split('/')[-2]
         obj_npy = vertices[triangle]
         #print(obj_npy.shape)
-        print('{}/{}/{}.npy'.format(npy_dir, cate, obj_name))
         np.save('{}/{}/{}.npy'.format(npy_dir, cate, obj_name),obj_npy)
         
 print('DONE')

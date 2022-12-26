@@ -7,3 +7,5 @@ logs/
 bads_list*
 ShapeNetCore*
 DualSDF_ckpts/
+obj_models*
+NOCS_npy/*

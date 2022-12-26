@@ -50,9 +50,11 @@ def main(args):
 
     data_list = []
     with os.scandir(data_path) as npy_list:
+        print(npy_list)
         for npy_path in npy_list:
-            if npy_path.is_file():
-                data_list.append(npy_path.path)
+            for npy_file in os.scandir(npy_path):
+                if npy_file.is_file():
+                    data_list.append(npy_file.path)
     data_list.sort()
     print(len(data_list))
     num_shapes = len(data_list)
