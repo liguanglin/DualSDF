@@ -1,9 +1,9 @@
 # DualSDF
 This repo is forked from original DualSDF, and add support for pretraining DualSDF models used in [gCasp](https://github.com/zju3dv/gCasp).
 
-### Data preparation for NOCS
+## Data preparation for NOCS
 The pretrained DualSDF models for all categories can be downloaded from [Google Drive](https://drive.google.com/file/d/1d5DT51ZzB2UqMLkOIV5nhmBAjku8zaGS/view?usp=sharing), or you could train the models according to the following instructions. 
-#### Download Data
+### Step 1: Download Data
 Download ShapeNet [object meshes](http://download.cs.stanford.edu/orion/nocs/obj_models.zip) used in NOCS, and unzip the meshes:
 ```bash
 unzip obj_models.zip
@@ -13,7 +13,7 @@ process the .obj files to .npy for sdf extraction:
 python obj2npy.py ./obj_models/train <path_to_mesh_npy_folder>
 ```
 
-#### Sample signed distance fields from meshes
+### Step 2: Sample signed distance fields from meshes
 Compile the CUDA kernel for computing SDF:  
 ```bash
 cd extensions/mesh2sdf2_cuda
@@ -33,7 +33,7 @@ This is what the result directory should look like:
         <shape_id>.npy
 ```
 
-#### Pretrain DualSDF models
+### Step 3: Pretrain DualSDF models
 Train DualSDF for all categories:
 ```bash
 python train_all.py
