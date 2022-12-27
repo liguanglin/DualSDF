@@ -44,7 +44,7 @@ Train DualSDF for one category:
 python train.py ./config/dualsdf_mug_256.yaml
 ```
 
-Pack the models from logs, these models would are in gCasp:
+Pack the models from logs, these models would be used in gCasp:
 ```bash
 python get_all_ckpts.py
 ```
